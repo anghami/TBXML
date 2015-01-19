@@ -632,35 +632,42 @@
 			
 			// find start of next element skipping any cdata sections within text
 			char * elementEnd = CDATAEnd;
-			
-			// find next open tag
-			elementEnd = strstr(elementEnd,"<");
-			// if open tag is a cdata section
-			while (strncmp(elementEnd,"<![CDATA[",9) == 0) {
-				// find end of cdata section
-				elementEnd = strstr(elementEnd,"]]>");
-				// find next open tag
-				elementEnd = strstr(elementEnd,"<");
-			}
-			
-			// calculate length of cdata content
-			long CDATALength = CDATAEnd-elementStart;
-			
-			// calculate total length of text
-			long textLength = elementEnd-elementStart;
-			
-			// remove begining cdata section tag
-			memcpy(elementStart, elementStart+9, CDATAEnd-elementStart-9);
+            
+            if (elementEnd)
+            {
+                // find next open tag
+                elementEnd = strstr(elementEnd,"<");
+                // if open tag is a cdata section
+                while (strncmp(elementEnd,"<![CDATA[",9) == 0) {
+                    // find end of cdata section
+                    elementEnd = strstr(elementEnd,"]]>");
+                    // find next open tag
+                    elementEnd = strstr(elementEnd,"<");
+                }
+                
+                // calculate length of cdata content
+                long CDATALength = CDATAEnd-elementStart;
+                
+                // calculate total length of text
+                long textLength = elementEnd-elementStart;
+                
+                // remove begining cdata section tag
+                memcpy(elementStart, elementStart+9, CDATAEnd-elementStart-9);
 
-			// remove ending cdata section tag
-			memcpy(CDATAEnd-9, CDATAEnd+3, textLength-CDATALength-3);
-			
-			// blank out end of text
-			memset(elementStart+textLength-12,' ',12);
-			
-			// set new search start position 
-			elementStart = CDATAEnd-9;
-			continue;
+                // remove ending cdata section tag
+                memcpy(CDATAEnd-9, CDATAEnd+3, textLength-CDATALength-3);
+                
+                // blank out end of text
+                memset(elementStart+textLength-12,' ',12);
+                
+                // set new search start position 
+                elementStart = CDATAEnd-9;
+                continue;
+            }
+            else
+            {
+                return;
+            }
 		}
 		
 		
