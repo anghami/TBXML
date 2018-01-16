@@ -46,6 +46,7 @@
 @implementation NSURLConnection (TBXML_HTTP)
 
 + (void)tbxmlAsyncRequest:(NSURLRequest *)request success:(TBXMLAsyncRequestSuccessBlock)successBlock failure:(TBXMLAsyncRequestFailureBlock)failureBlock {
+#ifndef WATCHOS
     
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
@@ -61,6 +62,7 @@
 			}
 		}		
 	});
+#endif
 }
 
 @end
